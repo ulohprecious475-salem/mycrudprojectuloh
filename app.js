@@ -8,15 +8,24 @@ app.use( express.json() );
 let todos = [
       { id: 1, task: 'Learn Node.js', completed: false},
       { id: 2, task: 'Build CRUD API', completed: false},
+      { id: 3, task: 'Test API', completed: true}
 ];
 
 app.get('/todos', (req, res) => {
     res.status(200).json(todos); // send array as JSON
 });
 
+app.get('/todos/active', (req, res) => {
+    const activeTodos = todos.filter(t => !t.completed && t.completed === false);
+    res.status(200).json(activeTodos);
+});
+
 app.post('/todos', (req, res) => {
     const newTodo = { id: todos.length + 1, ...req.body}; // Auto-ID
     todos.push(newTodo);
+    if(!newTodo.task) {
+        return res.status(400).json({ error: 'Task is required' });
+    };
     res.status(201).json(newTodo); // Echo back
 });
 
